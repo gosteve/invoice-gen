@@ -1,6 +1,6 @@
 import React, {useContext} from "react";
 import { InvoiceContext } from "../context/InvoiceContext";
-import FormInput from "./FormInput";
+import './InvoiceDetails.css';
 
 export default function InvoiceDetails() {
   const {invoiceInfo, setInvoiceInfo} = useContext(InvoiceContext);
@@ -17,7 +17,7 @@ export default function InvoiceDetails() {
 
   return (
     <>
-      <form onsubmit="return false;" className="space-y-6">
+      <form>
         <div className="space-y-1">
           <label className="font-bold text-sm">Client Name</label>
           <input className="w-full block border text-sm border-gray-400 rounded px-3 py-2 leading-6 focus:border-blue-400 focus:ring focus:ring-blue-400 focus:ring-opacity-50" type="text" placeholder="Client Name" name="clientName" onChange={changeInvoice} value={invoiceInfo.clientName}/>

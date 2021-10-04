@@ -7,9 +7,9 @@ function App() {
   return (
     <InvoiceProvider>
       <div className="flex flex-col mx-auto w-full min-h-screen bg-gray-100 lg:pl-64">
-        <nav id="page-sidebar" className="flex flex-col fixed top-0 left-0 bottom-0 w-full lg:w-64 h-full bg-sidebar-light border-r border-gray-200 z-50 transform transition-transform duration-500 ease-out -translate-x-full lg:translate-x-0 bg-gray-50" aria-label="Main Sidebar Navigation">
+        <nav id="page-sidebar" className="flex flex-col fixed top-0 left-0 bottom-0 w-full lg:w-72 h-full bg-sidebar-light border-r border-gray-200 z-50 transform transition-transform duration-500 ease-out -translate-x-full lg:translate-x-0 bg-gray-50" aria-label="Main Sidebar Navigation">
           <div className="h-16 flex-none flex items-center justify-between lg:justify-center px-4 w-full">
-            <a href="javascript:void(0)" className="inline-flex items-center space-x-2 font-bold text-lg tracking-wide text-gray-600 hover:text-gray-500">
+            <a href="#" className="inline-flex items-center space-x-2 font-bold text-lg tracking-wide text-gray-600 hover:text-gray-500">
               <svg className="hi-solid hi-cube-transparent inline-block w-5 h-5 text-indigo-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                 <path
                   fill-rule="evenodd"
@@ -19,7 +19,6 @@ function App() {
               </svg>
               <span>Invoice</span>
             </a>
-
             <div className="lg:hidden">
               <button type="button" className="inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-5 text-sm rounded border-transparent text-red-600 hover:text-red-400 focus:ring focus:ring-red-500 focus:ring-opacity-50 active:text-red-600">
                 <svg className="hi-solid hi-x inline-block w-4 h-4 -mx-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -28,7 +27,6 @@ function App() {
               </button>
             </div>
           </div>
-
           <div className="overflow-y-auto">
             <div className="p-4 w-full">
               <nav className="space-y-1">
@@ -55,7 +53,7 @@ function App() {
         </header>
         <main id="page-content" className="flex flex-auto flex-col max-w-full pt-16">
           <div className="container xl:max-w-7xl mx-auto p-4 lg:p-8">
-            <div className="flexbg-gray-50 rounded border border-gray-300 text-gray-900 text-base p-4 bg-white">
+            <div className="flexbg-gray-50 rounded border border-gray-300 invoice__body text-base p-4 bg-white">
               <InvoicePreview />
             </div>
           </div>
@@ -63,7 +61,7 @@ function App() {
         <footer id="page-footer" className="flex flex-none items-center bg-white">
           <div className="text-center flex flex-col md:text-left md:flex-row md:justify-between text-sm container xl:max-w-7xl mx-auto px-4 lg:px-8">
             <div className="pt-4 pb-1 md:pb-4">
-              <a href="https://tailkit.com" target="_blank" className="font-medium text-indigo-600 hover:text-indigo-400">
+              <a href="#" target="_blank" className="font-medium text-indigo-600 hover:text-indigo-400">
                 Invoice
               </a>
               © 2021
