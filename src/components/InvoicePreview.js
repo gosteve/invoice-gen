@@ -1,13 +1,14 @@
 import React, { useContext } from "react";
 import { InvoiceContext } from "../context/InvoiceContext";
 import InvoiceItem from "./InvoiceItem";
-
+import './InvoicePreview.css'
 function InvoicePreview() {
-  const { clientName, invoiceNumber, invoiceItems } = useContext(InvoiceContext);
+  const { invoiceInfo } = useContext(InvoiceContext);
   return (
     <>
-      <h1 className="text-gray-500 text-3xl py-2 font-bold text-right">{clientName}</h1>
-      <h2 className="text-gray-500 text-xl py-2 font-bold text-right">Invoice No.: #{invoiceNumber}</h2>
+      <h1 className="text-gray-500 text-3xl py-2 font-bold text-right">{invoiceInfo.clientName}</h1>
+      <h2 className="text-gray-500 text-xl py-2 font-bold text-right">Invoice No.: #{invoiceInfo.invoiceNumber}</h2>
+
       <div class="border border-gray-200 rounded overflow-x-auto min-w-full bg-white mt-5">
         <table class="min-w-full text-sm align-middle whitespace-nowrap">
           <thead>
@@ -19,9 +20,7 @@ function InvoicePreview() {
             </tr>
           </thead>
           <tbody>
-              {invoiceItems.map((invoiceItem) => (
-                <InvoiceItem key={invoiceItem.id} invoiceItem={invoiceItem} />
-              ))}
+
           </tbody>
         </table>
       </div>
