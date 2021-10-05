@@ -3,21 +3,37 @@ import { useReducer } from "react";
 import { InvoiceContext } from "../context/InvoiceContext";
 import "./InvoicePreview.css";
 import InvoiceRows from "./InvoiceRows";
+import InvoiceTotals from "./InvoiceTotals";
 
 const initialFormState = {
   description: "",
   quantity: 0,
   unitPrice: 0,
+  total: 0,
 };
 
 const initialItemsState = [];
 
 function lineReducer(state, action) {
-  console.log(action);
   switch (action.type) {
     case "ADD":
       return [...state, action.payload];
     case "SUB":
+      return 0;
+    case "RESET":
+      return [];
+    default:
+      return state;
+  }
+}
+
+function totalReducer(state, action) {
+  switch (action.type) {
+    case "ADD":
+      return state + action.payload;
+    case "SUB":
+      return state - action.payload;
+    case "RESET":
       return 0;
     default:
       return state;
@@ -28,10 +44,7 @@ function InvoicePreview() {
   const { invoiceInfo, setInvoiceInfo } = useContext(InvoiceContext);
   const [newInvoiceLine, setNewInvoiceLine] = useState(initialFormState);
   const [state, dispatch] = useReducer(lineReducer, initialItemsState);
-
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
+  const [invoiceTotal, calculateTotal] = useReducer(totalReducer, 0);
 
   function changeInvoiceLine(e) {
     const target = e.target;
@@ -43,11 +56,19 @@ function InvoicePreview() {
     }));
   }
 
+  function clearInvoiceItems() {
+    setInvoiceInfo({ ...invoiceInfo }, { invoiceItems: [] });
+    dispatch({ type: "RESET" });
+    calculateTotal({ type: "RESET" });
+  }
+
   function addToInvoice(e) {
     e.preventDefault();
-    console.log(invoiceInfo);
-    setInvoiceInfo({ ...invoiceInfo }, { invoiceItems: [...invoiceInfo.invoiceItems, newInvoiceLine] });
-    dispatch({ type: "ADD", payload: newInvoiceLine });
+    const temp = { ...invoiceInfo };
+    temp.invoiceItems.push({ ...newInvoiceLine, total: newInvoiceLine.quantity * newInvoiceLine.unitPrice });
+    setInvoiceInfo(temp);
+    dispatch({ type: "ADD", payload: { ...newInvoiceLine, total: newInvoiceLine.quantity * newInvoiceLine.unitPrice } });
+    calculateTotal({ type: "ADD", payload: newInvoiceLine.quantity * newInvoiceLine.unitPrice });
     setNewInvoiceLine({ ...initialFormState });
   }
 
@@ -71,9 +92,10 @@ function InvoicePreview() {
             <InvoiceRows rows={state} />
           </tbody>
         </table>
-        <form class="space-y-3 sm:space-y-0 sm:flex sm:items-center sm:space-x-2 p-2 mb-5">
+        <InvoiceTotals total={invoiceTotal} />
+        <form className="space-y-3 sm:space-y-0 sm:flex sm:items-center sm:space-x-2 p-2 mb-5">
           <div>
-            <label for="tk-form-layouts-inline-email" class="sr-only">
+            <label for="tk-form-layouts-inline-email" className="sr-only">
               Item Type
             </label>
             <select name="" id="" className="form-select block">
@@ -81,11 +103,11 @@ function InvoicePreview() {
             </select>
           </div>
           <div>
-            <label for="tk-form-layouts-inline-email" class="sr-only">
+            <label for="tk-form-layouts-inline-email" className="sr-only">
               Description
             </label>
             <input
-              class="block border border-gray-200 rounded px-3 py-2 leading-6 w-full focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+              className="block border border-gray-200 rounded px-3 py-2 leading-6 w-full focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
               type="text"
               id="tk-form-layouts-inline-desc"
               placeholder="Description"
@@ -95,11 +117,11 @@ function InvoicePreview() {
             />
           </div>
           <div>
-            <label for="tk-form-layouts-inline-password" class="sr-only">
+            <label for="tk-form-layouts-inline-password" className="sr-only">
               Quantity
             </label>
             <input
-              class="block border border-gray-200 rounded px-3 py-2 leading-6 w-full focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+              className="block border border-gray-200 rounded px-3 py-2 leading-6 w-full focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
               type="number"
               id="tk-form-layouts-inline-qty"
               name="quantity"
@@ -109,11 +131,11 @@ function InvoicePreview() {
             />
           </div>
           <div>
-            <label for="tk-form-layouts-inline-password" class="sr-only">
+            <label for="tk-form-layouts-inline-password" className="sr-only">
               Unit Price
             </label>
             <input
-              class="block border border-gray-200 rounded px-3 py-2 leading-6 w-full focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+              className="block border border-gray-200 rounded px-3 py-2 leading-6 w-full focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
               type="number"
               id="tk-form-layouts-inline-unit-price"
               name="unitPrice"
@@ -124,12 +146,19 @@ function InvoicePreview() {
           </div>
 
           <button
-            class="inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-6 rounded border-green-400 bg-green-400 text-white hover:text-white hover:bg-green-400 hover:border-green-400 focus:ring focus:ring-green-500 focus:ring-opacity-50 active:bg-indigo-700 active:border-indigo-700"
+            className="inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-6 rounded border-green-400 bg-green-400 text-white hover:text-white hover:bg-green-400 hover:border-green-400 focus:ring focus:ring-green-500 focus:ring-opacity-50 active:bg-indigo-700 active:border-indigo-700"
             onClick={addToInvoice}
           >
             Add
           </button>
         </form>
+        <button
+          type="button"
+          className="inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-6 rounded border-red-400 bg-red-400 text-white hover:text-white hover:bg-red-400 hover:border-red-400 focus:ring focus:ring-red-500 focus:ring-opacity-50 active:bg-red-700 active:border-red-700"
+          onClick={clearInvoiceItems}
+        >
+          Clear Form
+        </button>
       </div>
     </>
   );
