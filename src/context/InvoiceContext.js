@@ -8,8 +8,6 @@ export function InvoiceProvider(props) {
         clientName: "",
         invoiceNumber: "",
         invoiceItems: [
-            {"id": 1, "desc": "Develop something", "unit": 300, "total": 300},
-            {"id": 2, "desc": "Develop something", "unit": 300, "total": 2300}
         ]
     })
 

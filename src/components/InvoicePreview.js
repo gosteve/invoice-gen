@@ -1,13 +1,55 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { useReducer } from "react";
 import { InvoiceContext } from "../context/InvoiceContext";
-import InvoiceItem from "./InvoiceItem";
-import './InvoicePreview.css'
+import "./InvoicePreview.css";
+import InvoiceRows from "./InvoiceRows";
+
+const initialFormState = {
+  description: "",
+  quantity: 0,
+  unitPrice: 0,
+};
+
+const initialItemsState = [];
+
+function lineReducer(state, action) {
+  console.log(action);
+  switch (action.type) {
+    case "ADD":
+      return [...state, action.payload];
+    case "SUB":
+      return 0;
+    default:
+      return state;
+  }
+}
+
 function InvoicePreview() {
+  const { invoiceInfo, setInvoiceInfo } = useContext(InvoiceContext);
+  const [newInvoiceLine, setNewInvoiceLine] = useState(initialFormState);
+  const [state, dispatch] = useReducer(lineReducer, initialItemsState);
 
-  const { invoiceInfo } = useContext(InvoiceContext);
-  const [showAddItem, setShowAddItem] = useState(false);
+  useEffect(() => {
+    console.log(state);
+  }, [state]);
 
-  const onClick = () => setShowAddItem(!showAddItem);
+  function changeInvoiceLine(e) {
+    const target = e.target;
+    const name = target.name;
+    const value = target.type === "number" ? parseInt(target.value) : target.value;
+    setNewInvoiceLine((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  }
+
+  function addToInvoice(e) {
+    e.preventDefault();
+    console.log(invoiceInfo);
+    setInvoiceInfo({ ...invoiceInfo }, { invoiceItems: [...invoiceInfo.invoiceItems, newInvoiceLine] });
+    dispatch({ type: "ADD", payload: newInvoiceLine });
+    setNewInvoiceLine({ ...initialFormState });
+  }
 
   return (
     <>
@@ -26,44 +68,68 @@ function InvoicePreview() {
             </tr>
           </thead>
           <tbody>
-            <tr className="border border-collapse border-gray-100 text-base">
-              <td className="p-4 px-3 border border-gray-300">Development</td>
-              <td className="p-4 border border-gray-300">Lorem, ipsum dolor sit amet consectetur adipisicing</td>
-              <td className="p-4 border border-gray-300 text-right">1</td>
-              <td className="p-4 border border-gray-300 text-right">1</td>
-              <td className="p-4 border border-gray-300 text-right font-bold">R 400.00</td>
-            </tr>
-            <tr className="border border-collapse border-gray-100 text-base bg-gray-100">
-              <td className="p-4 px-3 border border-gray-300">Development</td>
-              <td className="p-4 border border-gray-300">Lorem, ipsum dolor sit amet consectetur adipisicing</td>
-              <td className="p-4 border border-gray-300 text-right">1</td>
-              <td className="p-4 border border-gray-300 text-right">1</td>
-              <td className="p-4 border border-gray-300 text-right font-bold">R 400.00</td>
-            </tr>
-            <tr className="border border-collapse border-gray-100 text-base">
-              <td className="p-4 px-3 border border-gray-300">Development</td>
-              <td className="p-4 border border-gray-300">Lorem, ipsum dolor sit amet consectetur adipisicing</td>
-              <td className="p-4 border border-gray-300 text-right">1</td>
-              <td className="p-4 border border-gray-300 text-right">1</td>
-              <td className="p-4 border border-gray-300 text-right font-bold">R 400.00</td>
-            </tr>
+            <InvoiceRows rows={state} />
           </tbody>
         </table>
-        {showAddItem ? (
-          <form onsubmit="return false;" class="space-y-3 sm:space-y-0 sm:flex sm:items-center sm:space-x-2">
-            <div>
-              <label for="tk-form-layouts-inline-email" class="sr-only">Email</label>
-              <input class="block border border-gray-200 rounded px-3 py-2 leading-6 w-full focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" type="email" id="tk-form-layouts-inline-email" placeholder="Email" />
-            </div>
-            <div>
-              <label for="tk-form-layouts-inline-password" class="sr-only">Password</label>
-              <input class="block border border-gray-200 rounded px-3 py-2 leading-6 w-full focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50" type="password" id="tk-form-layouts-inline-password" placeholder="Password" />
-            </div>
-            <button type="submit" class="inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-6 rounded border-indigo-700 bg-indigo-700 text-white hover:text-white hover:bg-indigo-800 hover:border-indigo-800 focus:ring focus:ring-indigo-500 focus:ring-opacity-50 active:bg-indigo-700 active:border-indigo-700">
-              Login
-            </button>
-        </form>) : 'Nothing!'}
-        <button className="bg-green-400 text-white font-bold p-2 rounded" onClick={ onClick }>Add Line</button>
+        <form class="space-y-3 sm:space-y-0 sm:flex sm:items-center sm:space-x-2 p-2 mb-5">
+          <div>
+            <label for="tk-form-layouts-inline-email" class="sr-only">
+              Item Type
+            </label>
+            <select name="" id="" className="form-select block">
+              <option>Development</option>
+            </select>
+          </div>
+          <div>
+            <label for="tk-form-layouts-inline-email" class="sr-only">
+              Description
+            </label>
+            <input
+              class="block border border-gray-200 rounded px-3 py-2 leading-6 w-full focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+              type="text"
+              id="tk-form-layouts-inline-desc"
+              placeholder="Description"
+              name="description"
+              onChange={changeInvoiceLine}
+              value={newInvoiceLine.description}
+            />
+          </div>
+          <div>
+            <label for="tk-form-layouts-inline-password" class="sr-only">
+              Quantity
+            </label>
+            <input
+              class="block border border-gray-200 rounded px-3 py-2 leading-6 w-full focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+              type="number"
+              id="tk-form-layouts-inline-qty"
+              name="quantity"
+              placeholder="Quantity"
+              onChange={changeInvoiceLine}
+              value={newInvoiceLine.quantity}
+            />
+          </div>
+          <div>
+            <label for="tk-form-layouts-inline-password" class="sr-only">
+              Unit Price
+            </label>
+            <input
+              class="block border border-gray-200 rounded px-3 py-2 leading-6 w-full focus:border-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-opacity-50"
+              type="number"
+              id="tk-form-layouts-inline-unit-price"
+              name="unitPrice"
+              placeholder="Unit Price"
+              onChange={changeInvoiceLine}
+              value={newInvoiceLine.unitPrice}
+            />
+          </div>
+
+          <button
+            class="inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-6 rounded border-green-400 bg-green-400 text-white hover:text-white hover:bg-green-400 hover:border-green-400 focus:ring focus:ring-green-500 focus:ring-opacity-50 active:bg-indigo-700 active:border-indigo-700"
+            onClick={addToInvoice}
+          >
+            Add
+          </button>
+        </form>
       </div>
     </>
   );
