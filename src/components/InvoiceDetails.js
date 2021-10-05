@@ -5,7 +5,6 @@ import "./InvoiceDetails.css";
 const initialState = { count: 0 };
 
 function invoiceReducer(state, action) {
-  console.log(action);
   switch (action.type) {
     case "add":
       return { count: state.count + action.payload };
@@ -19,10 +18,6 @@ function invoiceReducer(state, action) {
 export default function InvoiceDetails() {
   const { invoiceInfo, setInvoiceInfo } = useContext(InvoiceContext);
   const [state, dispatch] = useReducer(invoiceReducer, initialState);
-  useEffect(() => {
-    console.log("details", invoiceInfo);
-  }, [invoiceInfo]);
-
   function changeInvoice(e) {
     const target = e.target;
     const value = target.type === "checkbox" ? target.checked : target.value;

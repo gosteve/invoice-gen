@@ -57,7 +57,7 @@ function InvoicePreview() {
   }
 
   function clearInvoiceItems() {
-    setInvoiceInfo({ ...invoiceInfo }, { invoiceItems: [] });
+    setInvoiceInfo({ invoiceInfo: {...invoiceInfo} , invoiceItems: []});
     dispatch({ type: "RESET" });
     calculateTotal({ type: "RESET" });
   }
@@ -86,6 +86,7 @@ function InvoicePreview() {
               <th className="p-3 border border-gray-300 font-bold text-base text-right">Quantity</th>
               <th className="p-3 border border-gray-300 font-bold text-base text-right">Unit Price</th>
               <th className="p-3 border border-gray-300 font-bold text-base text-right">Amount</th>
+              <th className="p-3 border border-gray-300 font-bold text-base text-right"></th>
             </tr>
           </thead>
           <tbody>
