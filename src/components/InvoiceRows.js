@@ -1,18 +1,17 @@
-import React, {useContext} from "react";
+import React, { useContext } from "react";
 import { InvoiceContext } from "../context/InvoiceContext";
 
 function InvoiceRows({ rows }) {
-const { invoiceInfo, setInvoiceInfo } = useContext(InvoiceContext);
+  const { invoiceInfo, setInvoiceInfo } = useContext(InvoiceContext);
   if (rows.length === 0) {
     return (
       <tr>
-        <td className="p-4 px-3 border border-gray-300 text-gray-500 text-center" colSpan="5">
+        <td className="p-4 px-3 border border-gray-300 text-gray-500 text-center" colSpan="6">
           Add new rows to the invoice
         </td>
       </tr>
     );
   } else {
-
     function removeRow(id) {
       invoiceInfo.invoiceItems.splice(id, 1);
       setInvoiceInfo(invoiceInfo);
